@@ -3,7 +3,7 @@ export function Hero() {
     <section className="relative h-screen overflow-hidden bg-bg">
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: "url('/images/Surfaceuse.jpg')" }}
+        style={{ backgroundImage: `url('${import.meta.env.BASE_URL}images/Surfaceuse.jpg')` }}
         aria-hidden
       />
       <div

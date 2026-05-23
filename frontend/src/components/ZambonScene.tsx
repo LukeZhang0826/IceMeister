@@ -3,7 +3,7 @@ import { Box3, Color, Mesh, MeshStandardMaterial, Vector3 } from 'three'
 import { Canvas } from '@react-three/fiber'
 import { Environment, OrbitControls, useGLTF } from '@react-three/drei'
 
-const MODEL_URL = '/models/zamboni.gltf'
+const MODEL_URL = `${import.meta.env.BASE_URL}models/zamboni.gltf`
 useGLTF.preload(MODEL_URL)
 
 const POLAR_ANGLE = Math.PI / 2.25 // ~80°, locked
