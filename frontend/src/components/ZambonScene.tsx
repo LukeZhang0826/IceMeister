@@ -8,8 +8,8 @@ useGLTF.preload(MODEL_URL)
 
 const POLAR_ANGLE = Math.PI / 2.25 // ~80°, locked
 const TARGET_SIZE = 3 // largest dimension after normalization
-const MODEL_ROTATION: [number, number, number] = [Math.PI / 6, 0, 0]
-const SCENE_BG = '#1d1d20' // floor + canvas bg + section bg all match — no horizon
+const MODEL_ROTATION: [number, number, number] = [-Math.PI / 7, 0, 0]
+const SCENE_BG = '#0a0a0a' // floor + canvas bg + section bg all match — no horizon
 
 function Zamboni() {
   const { scene } = useGLTF(MODEL_URL)
@@ -17,7 +17,7 @@ function Zamboni() {
   const normalized = useMemo(() => {
     const copy = scene.clone()
     const material = new MeshStandardMaterial({
-      color: new Color('#d6d6d8'),
+      color: new Color('#a6a6a8'),
       metalness: 0.08,
       roughness: 0.78,
     })
@@ -71,7 +71,7 @@ export function ZambonScene() {
     <Canvas
       shadows
       frameloop="demand"
-      camera={{ position: [5, 1.5, 0], fov: 32, near: 0.1, far: 100 }}
+      camera={{ position: [-8, 1.5, -1], fov: 32, near: 0.1, far: 100 }}
       gl={{ antialias: true, logarithmicDepthBuffer: true }}
     >
       <color attach="background" args={[SCENE_BG]} />
