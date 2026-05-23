@@ -10,7 +10,7 @@ export function Machine() {
         <h2 className="text-4xl md:text-5xl font-medium tracking-tight max-w-2xl mb-16">
           127 kilograms, one purpose.
         </h2>
-        <div className="h-[70vh] w-full bg-surface/40 rounded-sm overflow-hidden">
+        <div className="h-[70vh] w-full bg-[#2a2a2e] rounded-sm overflow-hidden">
           <ZambonScene />
         </div>
         <p className="mt-6 font-mono text-xs uppercase tracking-widest text-ink-muted">
