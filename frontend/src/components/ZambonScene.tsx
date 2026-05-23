@@ -7,7 +7,9 @@ const MODEL_URL = '/models/zamboni.gltf'
 useGLTF.preload(MODEL_URL)
 
 const POLAR_ANGLE = Math.PI / 2.25 // ~80°, locked
-const TARGET_SIZE = 3 // model is normalized so its largest dimension is 3 units
+const TARGET_SIZE = 3 // largest dimension after normalization
+const MODEL_ROTATION: [number, number, number] = [Math.PI / 6, 0, 0]
+const SCENE_BG = '#1d1d20' // floor + canvas bg + section bg all match — no horizon
 
 function Zamboni() {
   const { scene } = useGLTF(MODEL_URL)
@@ -15,9 +17,9 @@ function Zamboni() {
   const normalized = useMemo(() => {
     const copy = scene.clone()
     const material = new MeshStandardMaterial({
-      color: new Color('#bdbdc0'),
-      metalness: 0.05,
-      roughness: 0.85,
+      color: new Color('#d6d6d8'),
+      metalness: 0.08,
+      roughness: 0.78,
     })
     copy.traverse((obj) => {
       if (obj instanceof Mesh) {
@@ -27,6 +29,10 @@ function Zamboni() {
       }
     })
 
+    // Corrective rotation FIRST — the .gltf has a baked forward-tilt
+    copy.rotation.set(...MODEL_ROTATION)
+
+    // Then normalize size based on the rotated bounding box
     const box = new Box3().setFromObject(copy)
     const size = new Vector3()
     box.getSize(size)
@@ -35,6 +41,7 @@ function Zamboni() {
       copy.scale.setScalar(TARGET_SIZE / maxDim)
     }
 
+    // Re-ground after scale: bottom at y=0, centered on x/z
     const scaledBox = new Box3().setFromObject(copy)
     const center = new Vector3()
     scaledBox.getCenter(center)
@@ -53,8 +60,8 @@ function Floor() {
       position={[0, -0.01, 0]}
       receiveShadow
     >
-      <planeGeometry args={[30, 30]} />
-      <meshStandardMaterial color="#1f1f24" roughness={0.9} metalness={0.05} />
+      <planeGeometry args={[40, 40]} />
+      <meshStandardMaterial color={SCENE_BG} roughness={0.95} metalness={0.05} />
     </mesh>
   )
 }
@@ -64,15 +71,16 @@ export function ZambonScene() {
     <Canvas
       shadows
       frameloop="demand"
-      camera={{ position: [5, 1.5, 0], fov: 38, near: 0.1, far: 100 }}
+      camera={{ position: [5, 1.5, 0], fov: 32, near: 0.1, far: 100 }}
       gl={{ antialias: true, logarithmicDepthBuffer: true }}
     >
-      <color attach="background" args={['#2a2a2e']} />
+      <color attach="background" args={[SCENE_BG]} />
 
-      <ambientLight intensity={0.5} />
+      <ambientLight intensity={0.55} />
+      {/* Key light — upper right-front */}
       <directionalLight
-        position={[4, 6, 3]}
-        intensity={0.9}
+        position={[5, 7, 4]}
+        intensity={1.1}
         castShadow
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
@@ -84,7 +92,10 @@ export function ZambonScene() {
         shadow-camera-bottom={-5}
         shadow-bias={-0.0001}
       />
-      <directionalLight position={[-4, 3, -3]} intensity={0.3} />
+      {/* Fill light — opposite side, softer */}
+      <directionalLight position={[-5, 4, -3]} intensity={0.45} />
+      {/* Rim light — behind, for edge separation */}
+      <directionalLight position={[0, 3, -6]} intensity={0.5} />
 
       <Floor />
 
