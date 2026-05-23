@@ -28,3 +28,6 @@ Thumbs.db
 
 # TypeScript build info
 *.tsbuildinfo
+
+# Local session notes (Claude Code context handoff)
+claude-session.md
