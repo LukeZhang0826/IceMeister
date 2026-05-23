@@ -21,7 +21,8 @@ export function ZambonScene() {
   return (
     <Canvas
       shadows
-      camera={{ position: [6, 4, 8], fov: 42 }}
+      frameloop="demand"
+      camera={{ position: [6, 4, 8], fov: 38 }}
       gl={{ antialias: true }}
     >
       <ambientLight intensity={0.35} />
@@ -34,7 +35,7 @@ export function ZambonScene() {
       />
 
       <Suspense fallback={null}>
-        <Bounds fit clip observe margin={1.25}>
+        <Bounds fit clip observe margin={1.05}>
           <Center bottom>
             <Zamboni />
           </Center>
@@ -44,13 +45,14 @@ export function ZambonScene() {
       <ContactShadows
         position={[0, 0, 0]}
         opacity={0.55}
-        scale={20}
+        scale={24}
         blur={2.4}
-        far={6}
+        far={8}
       />
       <Environment preset="warehouse" />
       <OrbitControls
         enablePan={false}
+        enableZoom={false}
         minPolarAngle={Math.PI / 6}
         maxPolarAngle={Math.PI / 2.05}
       />
