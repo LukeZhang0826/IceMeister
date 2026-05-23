@@ -17,13 +17,13 @@ export function Hero() {
 
       <div className="relative h-full max-w-7xl mx-auto px-8 flex flex-col">
         <div className="pt-24">
-          <p className="text-xs tracking-[0.3em] uppercase text-ink-muted mb-6">
+          <p className="text-xs tracking-[0.3em] uppercase text-white mb-6">
             Autonomous Ice Resurfacing
           </p>
           <h1 className="text-7xl md:text-9xl font-semibold tracking-tight leading-none">
             Ice<span className="text-accent">Meister</span>
           </h1>
-          <p className="mt-6 text-lg text-ink-muted max-w-xl leading-relaxed">
+          <p className="mt-6 text-lg text-white max-w-xl leading-relaxed">
             A compact, autonomous resurfacer designed for community rinks,
             training facilities, and backyard installations the big machines
             cannot reach.
