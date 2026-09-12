@@ -1,14 +1,14 @@
 # shared
 
-Code shared across multiple workspaces — typically types, schemas,
-protocol definitions, and constants.
+Definitions shared across IceMeister's layers: message schemas, protocol definitions, and constants.
 
-**Status:** placeholder. Language not yet chosen.
+**Status:** placeholder. Format not yet chosen.
 
-**Likely shape depending on stack choice:**
-- TypeScript package (added to `pnpm-workspace.yaml`, consumed by
-  `frontend` and a TS `backend`)
-- Protobuf or JSON Schema definitions with codegen scripts invoked
-  from each language's build pipeline (cross-language)
+These definitions have to be consumed from several languages:
 
-Pick one once `backend` and `controller` languages are committed.
+- C and C++ in `firmware`
+- ROS 2 in `controller`
+- Kotlin in `backend`
+- TypeScript in `frontend`
+
+That rules out a TypeScript-only package. The likely shape is a language-neutral schema format with code generation invoked from each layer's own build.

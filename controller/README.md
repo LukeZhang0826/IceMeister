@@ -1,18 +1,18 @@
 # controller
 
-Runtime orchestration layer sitting between `firmware` and `backend`.
-Likely responsibilities:
+IceMeister's onboard computer. Sits between `firmware` and `backend`.
 
-- Real-time control loop
-- Sensor fusion (IMU, encoders, lidar/depth if added)
-- Path planning and rink-edge tracking
-- Bridge between firmware (serial / CAN / UART) and backend (network)
+**Status:** placeholder. Exact board not yet chosen.
 
-**Status:** placeholder. Hardware target and language not yet chosen.
+**Stack:** Linux running ROS 2.
 
-**Likely candidates:**
-- Raspberry Pi 4/5 or Jetson Nano running:
-  - Python + ROS 2
-  - Rust (for tighter latency / no GIL)
+Responsibilities:
+
+- Autonomy: sensor fusion, localization, path planning, and rink-edge tracking
+- Send motion commands to the main microcontroller in `firmware` over serial or CAN
+- Send a periodic heartbeat to the main microcontroller so it can stop the vehicle if the controller hangs
+- Relay telemetry to `backend` over the network, buffering it when the connection drops
+
+Real-time motor control and safety interlocks live in `firmware`, not here.
 
 Not part of the pnpm workspace.

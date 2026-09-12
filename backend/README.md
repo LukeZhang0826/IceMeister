@@ -1,18 +1,20 @@
 # backend
 
-Cloud / server-side services. Candidate responsibilities:
+IceMeister's telemetry service. Runs off the vehicle and is the only thing the frontend talks to.
 
-- Telemetry ingest and storage
-- Fleet management (if more than one unit)
-- OTA firmware delivery
-- Remote control / monitoring API for the frontend
+**Status:** placeholder.
 
-**Status:** placeholder. Language and framework not yet chosen.
+**Stack:** Kotlin. Framework not yet chosen.
 
-**Likely candidates:**
-- Node + Fastify / Hono (would join the pnpm workspace)
-- Python + FastAPI
-- Go + standard library / chi
-- Rust + Axum
+**Architecture:** starting as a single monolith service. Split it apart only if a specific part needs to scale or deploy independently.
 
-Will define its own deployment target separately from the static frontend.
+Responsibilities:
+
+- Ingest telemetry from the onboard controller and store it
+- Serve telemetry and vehicle status to the frontend
+- Fleet management, once there is more than one unit
+- OTA update delivery, later
+
+The backend is never part of the vehicle's safety path. The vehicle has to stay safe if the backend or the network goes down.
+
+Not part of the pnpm workspace. Will define its own build and deployment target separately from the static frontend.
