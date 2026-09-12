@@ -99,11 +99,12 @@ export function ZambonScene() {
 
       <Floor />
 
+      {/* Both suspend while loading. Anything suspending outside this boundary
+          makes Canvas rethrow into the DOM tree and blank the whole page. */}
       <Suspense fallback={null}>
         <Zamboni />
+        <Environment preset="studio" />
       </Suspense>
-
-      <Environment preset="studio" />
       <OrbitControls
         target={[0, 0.6, 0]}
         enablePan={false}
