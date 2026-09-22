@@ -25,3 +25,7 @@ src/routeTree.gen.ts
 *.njsproj
 *.sln
 *.sw?
+
+# The design log sheet URL is published to the web, so it is not a secret and
+# CI needs it at build time. Real secrets still belong in *.local files.
+!.env

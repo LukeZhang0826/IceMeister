@@ -1,10 +1,13 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { useQuery } from '@tanstack/react-query'
 import {
-  entries,
+  fetchDesignLog,
   isMemberId,
+  memberName,
   members,
   type LogEntry,
   type MemberId,
+  type SkippedRow,
 } from '../data/designLog'
 
 type LogSearch = {
@@ -12,6 +15,7 @@ type LogSearch = {
 }
 
 export const Route = createFileRoute('/log')({
+  head: () => ({ meta: [{ title: 'Design Log' }] }),
   validateSearch: (search: Record<string, unknown>): LogSearch => ({
     member: isMemberId(search.member) ? search.member : undefined,
   }),
@@ -31,16 +35,23 @@ function formatDate(date: string) {
 
 function LogPage() {
   const { member: selected } = Route.useSearch()
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: ['designLog'],
+    queryFn: fetchDesignLog,
+    // Poll so an open tab picks up sheet edits without a reload. Google's own
+    // cache on the published CSV is the real floor on how fresh this can be.
+    staleTime: 10_000,
+    refetchInterval: 10_000,
+  })
 
-  const visible = entries
-    .filter((e) => !selected || e.member === selected)
-    .sort((a, b) => b.date.localeCompare(a.date))
+  const entries = data?.entries ?? []
+  const visible = entries.filter((e) => !selected || e.members.includes(selected))
 
   return (
     <main className="min-h-full px-8 py-24">
       <div className="max-w-5xl mx-auto">
         <p className="text-xs tracking-[0.3em] uppercase text-ink-muted mt-16 mb-6">
-          Design Log
+          Design Log - MTE 481 - Group 31
         </p>
         <h1 className="text-5xl font-semibold tracking-tight">
           Timeline of design work
@@ -59,23 +70,36 @@ function LogPage() {
               key={m.id}
               label={m.name}
               sublabel={m.role}
-              count={entries.filter((e) => e.member === m.id).length}
+              count={entries.filter((e) => e.members.includes(m.id)).length}
               active={selected === m.id}
               search={{ member: m.id }}
             />
           ))}
         </nav>
 
+        {data && data.skipped.length > 0 && <SkippedNotice skipped={data.skipped} />}
+
         <ol className="mt-16 border-t border-border">
           {visible.map((entry) => (
             <Entry
-              key={`${entry.date}-${entry.member}-${entry.title}`}
+              key={`${entry.date}-${entry.members.join('-')}-${entry.title}`}
               entry={entry}
             />
           ))}
         </ol>
 
-        {visible.length === 0 && (
+        {isPending && <p className="text-sm text-ink-muted py-12">Loading entries…</p>}
+
+        {isError && (
+          <div className="mt-16 rounded-sm border border-border bg-surface px-6 py-5">
+            <p className="text-sm">Could not load the design log.</p>
+            <p className="font-mono text-xs text-ink-muted mt-2">
+              {error instanceof Error ? error.message : String(error)}
+            </p>
+          </div>
+        )}
+
+        {!isPending && !isError && visible.length === 0 && (
           <p className="text-sm text-ink-muted py-12">No entries yet.</p>
         )}
       </div>
@@ -111,8 +135,30 @@ function MemberFilter({ label, sublabel, count, active, search }: MemberFilterPr
   )
 }
 
+function SkippedNotice({ skipped }: { skipped: SkippedRow[] }) {
+  return (
+    <div className="mt-8 rounded-sm border border-border bg-surface px-6 py-5">
+      <p className="text-sm">
+        {skipped.length} {skipped.length === 1 ? 'row' : 'rows'} in the sheet could not be
+        read and {skipped.length === 1 ? 'is' : 'are'} not shown below.
+      </p>
+      <ul className="mt-3 space-y-1 font-mono text-xs text-ink-muted">
+        {skipped.map((s) => (
+          <li key={`${s.row}-${s.reason}`}>
+            {s.row > 0 ? `row ${s.row}: ` : ''}
+            {s.reason}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
 function Entry({ entry }: { entry: LogEntry }) {
-  const member = members.find((m) => m.id === entry.member)
+  const solo = entry.members.length === 1
+  const role = solo
+    ? members.find((m) => m.id === entry.members[0])?.role
+    : `Group session · ${entry.members.length} members`
 
   return (
     <li className="grid md:grid-cols-[10rem_1fr] gap-x-8 gap-y-2 py-10 border-b border-border">
@@ -123,8 +169,8 @@ function Entry({ entry }: { entry: LogEntry }) {
       </div>
       <div>
         <p className="text-sm">
-          <span className="text-accent">{member?.name}</span>
-          <span className="text-ink-muted"> · {member?.role}</span>
+          <span className="text-accent">{entry.members.map(memberName).join(', ')}</span>
+          <span className="text-ink-muted"> · {role}</span>
         </p>
         <h2 className="text-2xl font-medium mt-2">{entry.title}</h2>
         <div className="mt-4 space-y-4 text-ink-muted leading-relaxed max-w-3xl">
