@@ -2,9 +2,8 @@
 #include <utils.h>
 #include <defs.h>
 
-extern uint8_t status;
-extern uint16_t adcValue;
-extern uint16_t lastSent;
+extern volatile uint8_t status;
+extern volatile uint16_t adcValue;
 static uint8_t buf[8], idx;
 
 uint8_t setupTWI(){
@@ -20,7 +19,6 @@ ISR(TWI0_TWIS_vect){
   if (s & TWI_APIF_bm){
     if((s & TWI_AP_bm) ){ // add something like && (status & ADC_VAL_NEW_bm) in future
       uint16_t v = adcValue;
-      lastSent = v;
       buf[0] = v;
       buf[1] = v >>8;
       idx = 0;

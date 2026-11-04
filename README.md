@@ -46,7 +46,7 @@ Turborepo monorepo. Only `frontend/` is live today, and it is the only pnpm work
 | `frontend/` | Live | Vite + React 19 + R3F SPA |
 | `backend/` | Placeholder | Kotlin telemetry service (monolith) |
 | `controller/` | Placeholder | Linux + ROS 2 onboard computer |
-| `firmware/` | Placeholder | FreeRTOS C++ main MCU, bare-metal C peripheral chips |
+| `firmware/` | In progress | FreeRTOS C++ main MCU, bare-metal C peripheral chips. `FingerBoards/` is the first board, built with PlatformIO |
 | `shared/` | Placeholder | Cross-language protocol and message definitions |
 
 ## Local development

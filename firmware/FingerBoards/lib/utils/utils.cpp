@@ -1,5 +1,12 @@
 #include <Arduino.h>
 
+#if F_CPU != 10000000L
+  #error "init_clock() hardcodes 10 MHz"
+#endif
+extern "C" void init_clock() {
+  _PROTECTED_WRITE(CLKCTRL_MCLKCTRLB, CLKCTRL_PEN_bm | CLKCTRL_PDIV_2X_gc);
+}
+
 uint8_t findAddress(){
   uint8_t addr = 0;
   for(uint8_t i = 0; i < 6; i++){
@@ -26,9 +33,9 @@ uint8_t setupPorts(uint8_t pullups){
 uint8_t setupADC(){
     ADC0.CTRLA &= ~ADC_RESSEL_bm; //set 10 bit resolution
     ADC0.CTRLC |= ADC_REFSEL_VDDREF_gc; //set reference voltage to VDD
-    ADC0.CTRLC |= ADC_PRESC_DIV4_gc; //set prescaler to 4
+    ADC0.CTRLC = (ADC0.CTRLC & ~ADC_PRESC_gm) | ADC_PRESC_DIV8_gc; //set prescaler to 8
     ADC0.CTRLC |= ADC_SAMPCAP_bm;
-    ADC0.MUXPOS = ADC_MUXPOS_AIN1_gc; //set input to PA2
+    ADC0.MUXPOS = ADC_MUXPOS_AIN1_gc; //set input to PA1
     ADC0.INTCTRL |= ADC_RESRDY_bm; //enable interrupt on conversion complete
     ADC0.CTRLA |= ADC_ENABLE_bm; //enable ADC
     return 1;

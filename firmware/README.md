@@ -2,7 +2,7 @@
 
 Embedded code that runs on IceMeister's onboard chips.
 
-**Status:** placeholder. Target hardware not yet chosen.
+**Status:** main microcontroller hardware not yet chosen. [`FingerBoards/`](FingerBoards/README.md) is the first peripheral board.
 
 ## Main microcontroller
 
@@ -21,4 +21,15 @@ Embedded code that runs on IceMeister's onboard chips.
 
 A physical e-stop cuts motor power through a relay, independent of all firmware.
 
-Not part of the pnpm workspace. Will build with its own toolchain.
+Not part of the pnpm workspace. Projects here build with [PlatformIO](https://platformio.org/).
+
+## Building
+
+Install PlatformIO with `pipx install platformio`, or use the PlatformIO IDE extension for VS Code. The toolchain and board packages download on the first build.
+
+Run `pio` commands from the project's folder, the one holding `platformio.ini`:
+
+```bash
+cd firmware/FingerBoards
+pio run
+```

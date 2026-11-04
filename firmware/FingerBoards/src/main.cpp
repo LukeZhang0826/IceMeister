@@ -8,7 +8,6 @@
 
 volatile uint16_t adcValue = 0;
 volatile uint8_t status = 0;
-volatile uint16_t lastSent;
 
 void setup() {
   Serial.begin(9600, SERIAL_TX_ONLY);
@@ -22,9 +21,8 @@ void setup() {
 }
 
 void loop() {
-  uint16_t a, s;
-  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { a = adcValue; s = lastSent; }
-  Serial.print(a); Serial.print(" / sent "); Serial.println(s);
+  uint16_t a;
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {a = adcValue;}
   Serial.print("ADC Value: ");
   Serial.println(adcValue);
   _delay_ms(1000);
