@@ -24,7 +24,7 @@ void loop() {
   uint16_t a;
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {a = adcValue;}
   Serial.print("ADC Value: ");
-  Serial.println(adcValue);
+  Serial.println(a);
   _delay_ms(1000);
 }
 
