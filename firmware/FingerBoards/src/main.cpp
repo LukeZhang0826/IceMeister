@@ -1,0 +1,35 @@
+#include <Arduino.h>
+#include <avr/io.h>
+#include <util/delay.h>
+#include <utils.h>
+#include <raw_twi.h>
+#include <util/atomic.h>
+#include <defs.h>
+
+volatile uint16_t adcValue = 0;
+volatile uint8_t status = 0;
+
+void setup() {
+  Serial.begin(9600, SERIAL_TX_ONLY);
+
+  setupPorts(0xFC);   //enables pullups on pins 2-7, sets pin 1 as pot input, sets up pin0 for updi
+  setupADC();  //setup ADC
+  setupTWI();
+  
+  //PORTB.OUTSET = PIN3_bm; //turn on LED
+  ADC0.COMMAND = ADC_STCONV_bm;
+}
+
+void loop() {
+  uint16_t a;
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {a = adcValue;}
+  Serial.print("ADC Value: ");
+  Serial.println(a);
+  _delay_ms(1000);
+}
+
+ISR(ADC0_RESRDY_vect){
+  adcValue = ADC0.RES;
+  status |= ADC_VAL_NEW_bm;
+  ADC0.COMMAND = ADC_STCONV_bm;
+}
