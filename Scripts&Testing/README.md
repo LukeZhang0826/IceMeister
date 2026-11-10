@@ -10,7 +10,7 @@ Add scripts here as they are written, and list them below so the folder is easy 
 
 | Script | Target | Purpose |
 | :--- | :--- | :--- |
-| _none yet_ | | |
+| [`FingerTester/`](FingerTester/README.md) | Finger board on the linear rail, XM430 motor, Uno I2C bridge | Pull the carriage 300 mm and plot finger ADC vs position |
 
 ## Conventions
 
