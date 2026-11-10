@@ -48,6 +48,7 @@ Turborepo monorepo. Only `frontend/` is live today, and it is the only pnpm work
 | `controller/` | Placeholder | Linux + ROS 2 onboard computer |
 | `firmware/` | In progress | FreeRTOS C++ main MCU, bare-metal C peripheral chips. `FingerBoards/` is the first board, built with PlatformIO |
 | `shared/` | Placeholder | Cross-language protocol and message definitions |
+| `Scripts&Testing/` | In progress | Scripts for testing hardware. See its [README](Scripts&Testing/README.md) |
 
 ## Local development
 
